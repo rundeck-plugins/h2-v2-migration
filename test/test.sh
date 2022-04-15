@@ -187,6 +187,10 @@ verify_test_data() {
 backup_db() {
   local DATADIR=$1
   mkdir -p "$DATADIR/backup"
+  if [ -f "$DATADIR/backup/grailsdb.mv.db" ] ; then
+    echo "not performing backup: contents already exist in $DATADIR/backup/"
+    return 0
+  fi
   cp $DATADIR/data/grailsdb* "$DATADIR/backup/"
 }
 
