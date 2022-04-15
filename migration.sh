@@ -36,9 +36,9 @@ if [ -d "$OUTPUT_DIR/v2" ]; then
 fi
 
 echo "===> Start to download JDBC drivers: "
-#curl https://repo1.maven.org/maven2/com/h2database/h2/1.4.200/h2-1.4.200.jar --output $OUTPUT_DIR/h2-1.4.200.jar
+curl https://repo1.maven.org/maven2/com/h2database/h2/1.4.200/h2-1.4.200.jar --output $OUTPUT_DIR/h2-1.4.200.jar
 
-#curl https://repo1.maven.org/maven2/com/h2database/h2/2.1.212/h2-2.1.212.jar --output $OUTPUT_DIR/h2-2.1.212.jar
+curl https://repo1.maven.org/maven2/com/h2database/h2/2.1.212/h2-2.1.212.jar --output $OUTPUT_DIR/h2-2.1.212.jar
 
 echo "===> Jdbc drivers downloaded."
 echo ""
