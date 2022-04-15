@@ -16,6 +16,10 @@ main() {
   [ 0 == $? ] || die "API test failed"
   assert_json_notnull "$DATADIR/system-info.json" ".system.rundeck.version" "System Info Version"
 
+  api_get "system/executions/status" > "$DATADIR/get-exec-mode.json"
+  [ 0 == $? ] || die "API test failed"
+  assert_json "$DATADIR/get-exec-mode.json" ".executionMode" "active" "Execution Mode Active"
+
   api_get "projects" >"$DATADIR/get-projects.out"
   [ 0 == $? ] || die "Get projects failed"
 
