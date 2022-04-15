@@ -145,6 +145,7 @@ test_upgrade() {
   echo "Upgrading H2v1 DB to H2V2 ..."
   upgrade_db "$DATADIR"
 
+  echo "Starting docker ${REPO}:${TOVERS} with 1m timeout..."
   ID=$(start_docker "${REPO}:${TOVERS}" "$DATADIR")
 
   echo "Testing data for $ID ..."
