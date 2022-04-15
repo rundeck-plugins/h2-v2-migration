@@ -44,17 +44,17 @@ echo "===> Jdbc drivers downloaded."
 echo ""
 
 echo "===> Start to export database into SQL script: "
-java -cp $OUTPUT_DIR/h2-1.4.200.jar org.h2.tools.Script -url "jdbc:h2:$file" -user "" -script "./$OUTPUT_DIR/backup.sql"
+java -cp $OUTPUT_DIR/h2-1.4.200.jar org.h2.tools.Script -url "jdbc:h2:$file" -user "$username" -password "$password" -script "./$OUTPUT_DIR/backup.sql"
 echo "===> Done export."
 echo ""
 
 echo "===> Start to create h2 v2 database from the exported SQL script: "
-java -cp $OUTPUT_DIR/h2-2.1.212.jar org.h2.tools.RunScript -url "jdbc:h2:./$OUTPUT_DIR/v2/data/grailsdb" -user "" -script "./$OUTPUT_DIR/backup.sql" -options FROM_1X
+java -cp $OUTPUT_DIR/h2-2.1.212.jar org.h2.tools.RunScript -url "jdbc:h2:./$OUTPUT_DIR/v2/data/grailsdb" -user "$username" -password "$password" -script "./$OUTPUT_DIR/backup.sql" -options FROM_1X
 echo "===> v2 database has been created at ./$OUTPUT_DIR/v2/data/grailsdb.mv.db"
 echo ""
 
 echo "===> Fix databsae change logs"
-java -cp $OUTPUT_DIR/h2-2.1.212.jar org.h2.tools.RunScript -url "jdbc:h2:./$OUTPUT_DIR/v2/data/grailsdb" -user "" -script "./changelog_backup.sql"
+java -cp $OUTPUT_DIR/h2-2.1.212.jar org.h2.tools.RunScript -url "jdbc:h2:./$OUTPUT_DIR/v2/data/grailsdb" -user "$username" -password "$password" -script "./changelog_backup.sql"
 echo "===> Database change logs has been fixed."
 echo ""
 echo ""
