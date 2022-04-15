@@ -17,3 +17,7 @@ update DATABASECHANGELOG  set MD5SUM = '8:bd8b295f17096c9e4ba3bde8f0c34fb1' wher
 update DATABASECHANGELOG  set MD5SUM = '8:e7835cf8bff75e7a5bd877692e6ec04f' where ID = '3.4.0-14';
 update DATABASECHANGELOG  set MD5SUM = '8:803933b0f8d0250b704134194acaf60e' where ID = '3.4.0-25';
 update DATABASECHANGELOG  set MD5SUM = '8:0633dfb3f1e885ed8ba6877cdb106dc8' where ID = '3.4.11-webhook-auth_config_json';
+update DATABASECHANGELOG  set MD5SUM = '8:4109d26411a9db4a33d57fe16acf8337' where ID = '3.4.calendars-1';
+update DATABASECHANGELOG  set MD5SUM = '8:770fa74ec2f6b28634d997bbfe827521' where ID = '3.4.0-acl-1';
+update DATABASECHANGELOG  set MD5SUM = '8:0ec7287ebce58f97324a2b57b04373e5' where ID = '3.4.0-acl-2';
+update DATABASECHANGELOG  set MD5SUM = '8:1f1d2652d6447a5b5f6ffb9cff73c4e6' where ID = '3.4.0-sched-1';
