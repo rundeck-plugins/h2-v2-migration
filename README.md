@@ -25,9 +25,11 @@ Open a shell terminal and navigate into the `h2-v2-migration` git repo. Execute 
     $_>/bin/sh migration.sh -f ${backup_directory}/grailsdb.mv.db -u ${username} -p ${password}
     
 
-The `-f` option is required and should be the full path to the backup database file.
+- The `-f` parameter is required and should be the full path to the backup database file.
+- The optional `-u` parameter is used for database username. If it is not provided, an empty string will be used.
+- The optional `-p` parameter is used for database password. If it is not provided, an empty string will be used. 
 
-By default, the `username` and `password` parameters are both empty string. If you have any custom setup, please use your customized value.
+By default, the `username` and `password` parameters are both empty string. If you have any custom setup, please use your customized values.
 
 
 
