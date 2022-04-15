@@ -16,3 +16,12 @@ then verify the DB contents are expected.
 
 Perform full upgrade test from `rundeck/rundeck:3.4.10` docker image to the `rundeck/rundeck:4.1.0` image.
 
+## Example
+
+Test upgrade from 3.4.10 to SNAPSHOT for rundeck/rundeck
+
+`sh test/test.sh -f 3.4.10 -t SNAPSHOT -r rundeck/rundeck -T`
+
+Test upgrade from 4.0.1 to SNAPSHOT for rundeck/rundeck
+
+`sh test/test.sh -f 4.0.1 -t SNAPSHOT -r rundeck/rundeck -T`
