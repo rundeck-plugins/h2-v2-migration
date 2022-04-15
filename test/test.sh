@@ -21,13 +21,6 @@ WORKDIR="${SRC_DIR}/work"
 TOKEN=letmein
 source "${SRC_DIR}/common.sh"
 
-usage() {
-  grep '^#/' <"$0" | cut -c4- # prints the #/ lines above as usage info
-}
-die() {
-  echo >&2 "$@"
-  exit 2
-}
 
 REPO=${REPO:-rundeck/rundeck}
 

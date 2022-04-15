@@ -2,6 +2,14 @@
 # ID of canned job in test-job.xml
 JOBID=4cb8f9f9-2a1c-48b6-aca0-018169d2f7c8
 
+usage() {
+  grep '^#/' <"$0" | cut -c4- # prints the #/ lines above as usage info
+}
+die() {
+  echo >&2 "$@"
+  exit 2
+}
+
 assert_json(){
   local FILE=$1
   local Q=$2
