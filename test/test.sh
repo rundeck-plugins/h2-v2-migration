@@ -19,6 +19,8 @@ IFS=$'\n\t'
 SRC_DIR=$(cd "$(dirname "$0")" && pwd)
 WORKDIR="${SRC_DIR}/work"
 TOKEN=letmein
+LICENSEFILE=
+LICENSEAGREE=false
 source "${SRC_DIR}/common.sh"
 
 
@@ -76,6 +78,9 @@ start_docker() {
 
 load_test_data() {
   local DATADIR=$1
+  if [ -n "$LICENSEFILE" ]; then
+    sh "${SRC_DIR}/load_license.sh" "${DATADIR}" "${LICENSEFILE}" "${LICENSEAGREE}"
+  fi
   sh "${SRC_DIR}/create_test_content.sh" "${DATADIR}"
 }
 
@@ -156,7 +161,7 @@ main() {
   local fromvers
   local repo
   local tovers
-  while getopts Tt:w:aluvd:f:r:sh flag; do
+  while getopts Tt:w:aluvd:f:r:shL:A: flag; do
     case "${flag}" in
     T)
       test_upgrade "${fromvers:?-f fromvers required}" "${tovers:-SNAPSHOT}" "${repo:-rundeck/rundeck}"
@@ -173,6 +178,12 @@ main() {
       ;;
     t)
       tovers=${OPTARG}
+      ;;
+    L)
+      LICENSEFILE=${OPTARG}
+      ;;
+    A)
+      LICENSEAGREE=${OPTARG}
       ;;
     s)
       start_docker "${repo:-rundeck/rundeck}:${fromvers:?-f version required}" "${ddir:?-d dir required}"
