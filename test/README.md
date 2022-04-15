@@ -25,3 +25,8 @@ Test upgrade from 3.4.10 to SNAPSHOT for rundeck/rundeck
 Test upgrade from 4.0.1 to SNAPSHOT for rundeck/rundeck
 
 `sh test/test.sh -f 4.0.1 -t SNAPSHOT -r rundeck/rundeck -T`
+
+If using rundeckpro/enterprise, you must specify license file with `-L` and agreement to license terms
+with `-A true`
+
+`sh test/test.sh -f 4.0.1 -t SNAPSHOT -r rundeckpro/enterprise -L path/to/license -A true -T`
