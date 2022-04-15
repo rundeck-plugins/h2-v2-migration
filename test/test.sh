@@ -130,8 +130,11 @@ test_upgrade() {
   fi
   mkdir -p "$DATADIR/data"
   mkdir -p "$DATADIR/logs"
+  echo "BEGIN: Upgrade test from $FROMVERS to $TOVERS for $REPO"
+  echo "Workdir: $DATADIR"
 
-  echo "Starting docker ${REPO}:${FROMVERS} ..."
+
+  echo "Starting docker ${REPO}:${FROMVERS} with 1m timeout..."
   local ID
   ID=$(start_docker "${REPO}:${FROMVERS}" "$DATADIR")
 
@@ -152,7 +155,7 @@ test_upgrade() {
   echo "Stopping $ID ..."
   docker stop "$ID"
 
-  echo "Upgrade from $FROMVERS to $TOVERS verification complete."
+  echo "Upgrade from $FROMVERS to $TOVERS for $REPO verification complete."
 }
 
 main() {
