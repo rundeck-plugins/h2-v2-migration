@@ -19,6 +19,8 @@ IFS=$'\n\t'
 SRC_DIR=$(cd "$(dirname "$0")" && pwd)
 WORKDIR="${SRC_DIR}/work"
 TOKEN=letmein
+# ID of canned job in test-job.xml
+JOBID=4cb8f9f9-2a1c-48b6-aca0-018169d2f7c8
 
 usage() {
   grep '^#/' <"$0" | cut -c4- # prints the #/ lines above as usage info
@@ -81,14 +83,14 @@ start_docker() {
 }
 
 api_get() {
-  curl -H "x-rundeck-auth-token:${TOKEN}" -H "accept:application/json" "http://localhost:4441/api/40/$1" | jq .
+  curl -s -S -q -H "x-rundeck-auth-token:${TOKEN}" -H "accept:application/json" "http://localhost:4441/api/40/$1" | jq .
 }
 
 api_post() {
-  curl -X POST -H "x-rundeck-auth-token:${TOKEN}" -H "accept:application/json" -H "content-type:application/json" --data-binary "$2" "http://localhost:4441/api/40/$1" | jq .
+  curl -s -S -X POST -H "x-rundeck-auth-token:${TOKEN}" -H "accept:application/json" -H "content-type:application/json" --data-binary "$2" "http://localhost:4441/api/40/$1" | jq .
 }
 api_jobxml_create() {
-  curl -X POST -H "x-rundeck-auth-token:${TOKEN}" -H "accept:application/json" \
+  curl -s -S -X POST -H "x-rundeck-auth-token:${TOKEN}" -H "accept:application/json" \
     -H "content-type:application/xml" \
     --data-binary "$1" \
     "http://localhost:4441/api/40/project/test/jobs/import?dupeOption=skip" | jq .
@@ -104,7 +106,7 @@ authenticate() {
     jq -r .token <"${TFILE}"
     exit 0
   fi
-  curl -X POST \
+  curl -s -S  -X POST \
     -s -S -L -c "${CFILE}" -b "${CFILE}" \
     -d j_username=admin -d j_password=admin \
     "http://localhost:4441/j_security_check" >"${LOGIN}"
@@ -116,7 +118,7 @@ authenticate() {
     die "login was not successful"
   fi
   # request API token
-  curl -X POST \
+  curl -s -S -X POST \
     -s -S -L -c "${CFILE}" -b "${CFILE}" \
     -H "content-type:application/json" \
     -H "accept:application/json" \
@@ -130,6 +132,24 @@ authenticate() {
   set -e
 }
 
+assert_json(){
+  local FILE=$1
+  local Q=$2
+  local EXPECT=$3
+  local MSG=$4
+  VAL=$(jq -r "$Q" "$FILE")
+  [ "$EXPECT" == "$VAL" ] || die "Result for $MSG was not correct: $VAL"
+  echo "√ $MSG"
+}
+assert_json_notnull(){
+  local FILE=$1
+  local Q=$2
+  local MSG=$3
+  VAL=$(jq -r "$Q" "$FILE")
+  [ -n "$VAL" ] && [ "null" != "$VAL" ] || die "Result for $MSG was null: $VAL"
+  echo "√ $MSG"
+}
+
 load_test_data() {
   local DATADIR=$1
   echo "Authenticate"
@@ -137,23 +157,23 @@ load_test_data() {
   [ -n "$TOKEN" ] && [ "null" != "$TOKEN" ] || die "Could not get auth TOKEN"
   echo "Test API with token $TOKEN"
 
-  VAL=$(api_get "system/info" | jq -r .system.rundeck.version)
+  api_get "system/info" > "$DATADIR/system-info.json"
   [ 0 == $? ] || die "API test failed"
-  [ -n "$VAL" ] && [ "null" != "$VAL" ] || die "Could not get sys info: $VAL"
+  assert_json_notnull "$DATADIR/system-info.json" ".system.rundeck.version" "System Info Version"
 
   api_post "projects" '{"name":"test"}' >"$DATADIR/create-project.out"
   [ 0 == $? ] || die "Create project failed"
   VAL=$(jq -r .url "$DATADIR/create-project.out")
   VAL2=$(jq -r .errorCode "$DATADIR/create-project.out")
-  { [ -z "$VAL" ] || [ "null" == "$VAL" ] ; } &&
-    { [ -z "$VAL2" ] || [ "api.error.item.alreadyexists" == "$VAL2" ] ; } ||
-    die "Could not get create project: $VAL"
+  { [ -n "$VAL" ] && [ "null" != "$VAL" ] ; } ||
+    { [ -n "$VAL2" ] && [ "api.error.item.alreadyexists" == "$VAL2" ] ; } ||
+    die "Could not create project: $VAL"
 
   VAL=$(api_jobxml_create "@${SRC_DIR}/test-job.xml" | jq -r ".succeeded[0].message + \"/\" + .skipped[0].error")
   [ 0 == $? ] || die "Create job failed"
   [ -n "$VAL" ] && [ "null" != "$VAL" ] || die "Could not get value: $VAL"
 
-  api_post 'job/4cb8f9f9-2a1c-48b6-aca0-018169d2f7c8/executions' '{}' >"$DATADIR/run1.out"
+  api_post "job/$JOBID/executions" '{}' >"$DATADIR/run1.out"
   [ 0 == $? ] || die "Execute job failed"
 
   execid=$(jq -r .id "$DATADIR/run1.out")
@@ -169,19 +189,30 @@ verify_test_data() {
   [ -n "$TOKEN" ] && [ "null" != "$TOKEN" ] || die "Could not get auth TOKEN"
   echo "Test API with token $TOKEN"
 
-  VAL=$(api_get "system/info" | jq -r .system.rundeck.version)
+  api_get "system/info" > "$DATADIR/system-info.json"
   [ 0 == $? ] || die "API test failed"
-  [ -n "$VAL" ] && [ "null" != "$VAL" ] || die "Could not get sys info: $VAL"
+  assert_json_notnull "$DATADIR/system-info.json" ".system.rundeck.version" "System Info Version"
 
   api_get "projects" >"$DATADIR/get-projects.out"
   [ 0 == $? ] || die "Get projects failed"
+  echo "√ Get Project List"
 
-  VAL=$(jq -r length "$DATADIR/get-projects.out")
-  [ "1" == "$VAL" ] || die "Expected 1 result: $VAL"
+  assert_json "$DATADIR/get-projects.out" "length" "1" "Project List: 1 Result"
+  assert_json "$DATADIR/get-projects.out" ".[0].name" "test" "Project List: Project name"
 
-  VAL=$(jq -r .[0].name "$DATADIR/get-projects.out")
-  [ "test" == "$VAL" ] || die "Expected test project: $VAL"
+  api_get "project/test/jobs" >"$DATADIR/get-jobs.out"
+  [ 0 == $? ] || die "Get Jobs failed"
+  echo "√ Get Jobs List"
 
+  assert_json "$DATADIR/get-jobs.out" "length" "1" "Jobs List: 1 Result"
+  assert_json "$DATADIR/get-jobs.out" ".[0].id" "$JOBID" "Jobs List: Job ID Value"
+
+  api_get "execution/1" >"$DATADIR/get-exec.out"
+  [ 0 == $? ] || die "Get Execution failed"
+  echo "√ Get Execution 1"
+
+  assert_json "$DATADIR/get-exec.out" ".job.id" "$JOBID" "Execution Job ID Value"
+  assert_json "$DATADIR/get-exec.out" ".status" "succeeded" "Execution Status"
 }
 
 backup_db() {
