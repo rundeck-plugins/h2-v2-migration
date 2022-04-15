@@ -42,9 +42,9 @@ wait_for_server_start() {
     ((count++))
     if [ "$count" -gt $timeout ]; then
       if docker logs "$ID" 2>&1 | grep -q 'Exception'; then
-        echo "Startup failed, an exception was encountered, stored in $DATADIR/logs/rundeck.stdout.log and $DATADIR/logs/rundeck.stderr.log"
+        echo "Startup failed, an exception was encountered, stored in $DATADIR/logs/rundeck.stdout.log and $DATADIR/logs/rundeck.stderr.log">&2
         docker logs "$ID"  >"$DATADIR/logs/rundeck.stdout.log"  2>"$DATADIR/logs/rundeck.stderr.log"
-        echo "Stopping...$ID"
+        echo "Stopping...$ID">&2
         docker stop $ID
       fi
       exit 1
@@ -54,9 +54,9 @@ wait_for_server_start() {
   done
   #  echo "Done."
   if docker logs "$ID" 2>&1 | grep -q 'Exception'; then
-      echo "Startup failed, an exception was encountered, stored in $DATADIR/logs/rundeck.stdout.log and $DATADIR/logs/rundeck.stderr.log"
+      echo "Startup failed, an exception was encountered, stored in $DATADIR/logs/rundeck.stdout.log and $DATADIR/logs/rundeck.stderr.log">&2
       docker logs "$ID"  >"$DATADIR/logs/rundeck.stdout.log"  2>"$DATADIR/logs/rundeck.stderr.log"
-      echo "Stopping...$ID"
+      echo "Stopping...$ID">&2
       docker stop $ID
     exit 1
   fi
@@ -125,6 +125,9 @@ test_upgrade() {
   local TOVERS=$2
   local REPO=$3
   local DATADIR="${WORKDIR}/test-$FROMVERS"
+  if [ -f "$DATADIR/data/grailsdb.mv.db" ] ; then
+      echo "WARNING: detected existing data in workdir $DATADIR. Likely you want to remove this before starting."
+  fi
   mkdir -p "$DATADIR/data"
   mkdir -p "$DATADIR/logs"
 
