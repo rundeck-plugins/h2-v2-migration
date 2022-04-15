@@ -9,8 +9,8 @@ do
     esac
 done
 
-if [ -z "$file" ]; then
-    echo "===> Please use -f option to provide the path to the database file. e.g. migration.sh -f path/to/database/file.mv.db"
+if [ ! -f "$file.mv.db" ]; then
+    echo "===> $file is not a valid path. Please use -f option to provide the path to the database file. e.g. migration.sh -f path/to/database/file without extension"
     exit -1
 fi
 
