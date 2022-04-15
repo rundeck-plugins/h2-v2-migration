@@ -31,10 +31,11 @@ Open a shell terminal and navigate into the `h2-v2-migration` git repo. Execute 
 
 By default, the `username` and `password` parameters are both empty string. If you have any custom setup, please use your customized values.
 
+The migration.sh script will create a `output` folder at curent location and put all generated files (including the v2 database file) into it.
 
 
 ## STEP-2. Deploy the new version database
-- Use the generated database file `./output/v2/data/grails.mv.db` from last step to replace your the target Rundeck application database at `{RUNDECK_HOME}/server/data/grails.mv.db`
+- Use the generated database file `./output/v2/data/grails.mv.db` from the above step to replace your the target Rundeck application database at `{RUNDECK_HOME}/server/data/grails.mv.db`
 - Set the permission of the file `{RUNDECK_HOME}/server/data/grails.mv.db` correctly, so Rundeck application can access it with write permission. Login to the docker container’s shell to change the ownership of the database files by executing the below command: 
 
        sudo chown rundeck:root {RUNDECK_HOME}/server/data/grailsdb.mv.db
