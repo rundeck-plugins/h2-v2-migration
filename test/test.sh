@@ -48,6 +48,8 @@ wait_for_server_start() {
     sleep 5
     #    echo "not found..."
   done
+  # sleep shortly to see if any other issues arise
+  sleep 15
   #  echo "Done."
   if docker logs "$ID" 2>&1 | grep -q 'Exception'; then
       echo "Startup failed, an exception was encountered, stored in $DATADIR/logs/rundeck.stdout.log and $DATADIR/logs/rundeck.stderr.log">&2
