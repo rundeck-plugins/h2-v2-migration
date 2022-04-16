@@ -78,8 +78,9 @@ start_docker() {
 
 load_test_data() {
   local DATADIR=$1
+  local VERS=$2
   if [ -n "$LICENSEFILE" ]; then
-    sh "${SRC_DIR}/load_license.sh" "${DATADIR}" "${LICENSEFILE}" "${LICENSEAGREE}"
+    sh "${SRC_DIR}/load_license.sh" "${DATADIR}" "${LICENSEFILE}" "${LICENSEAGREE}" "$VERS"
   fi
   sh "${SRC_DIR}/create_test_content.sh" "${DATADIR}"
 }
@@ -137,7 +138,7 @@ test_upgrade() {
   ID=$(start_docker "${REPO}:${FROMVERS}" "$DATADIR")
 
   echo "Populating data for $ID ..."
-  load_test_data "$DATADIR"
+  load_test_data "$DATADIR" "$FROMVERS"
 
   echo "Stopping $ID ..."
   docker stop "$ID"
@@ -199,7 +200,7 @@ main() {
       exit 0
       ;;
     l)
-      load_test_data "${ddir:?-d dir required}"
+      load_test_data "${ddir:?-d dir required}" "${fromvers:?-f fromvers required}"
       exit 0
       ;;
     u)
