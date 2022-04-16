@@ -30,3 +30,19 @@ If using rundeckpro/enterprise, you must specify license file with `-L` and agre
 with `-A true`
 
 `sh test/test.sh -f 4.0.1 -t SNAPSHOT -r rundeckpro/enterprise -L path/to/license -A true -T`
+
+## Utilities
+
+The utility options to test.sh can be used to perform parts of the upgrade test in piecemeal fashion.
+
+Perform just the h2 upgrade script for a workdir
+
+`sh test/test.sh -d test/work/test-4.0.1 -u`
+
+Restore the backup h2v1 files then upgrade again:
+
+`sh test/test.sh -d test/work/test-4.0.1 -R -u`
+
+Start Rundeck docker container using the workdir:
+
+`sh test/test.sh -d test/work/test-4.0.1 -f 4.0.1 -r rundeckpro/enterprise -s`
