@@ -11,6 +11,7 @@
 #/ Usage: test.sh -d dir -a  # authenticate to rundeck and store token in workdir $dir
 #/ Usage: test.sh -d dir -l  # load test content to rundeck api
 #/ Usage: test.sh -d dir -u  # upgrade h2 db for workdir
+#/ Usage: test.sh -d dir -R -u  # restore h2v1 from backup, then upgrade h2 db for workdir
 #/ Usage: test.sh -d dir -v  # verify test content via rundeck api
 #/ Usage: test.sh -h # usage help
 
@@ -100,6 +101,17 @@ backup_db() {
   cp $DATADIR/data/grailsdb* "$DATADIR/backup/"
 }
 
+restore_backup_db() {
+  local DATADIR=$1
+  mkdir -p "$DATADIR/backup"
+  if [ ! -f "$DATADIR/backup/grailsdb.mv.db" ] ; then
+    echo "Cannot restore backup: it does not exist in $DATADIR/backup/"
+    exit 1
+  fi
+  echo "Restoring backup files from $DATADIR/backup .."
+  cp $DATADIR/backup/grailsdb* "$DATADIR/data/"
+}
+
 migrate_db() {
   local DATADIR=$1
   local username=$2
@@ -163,7 +175,8 @@ main() {
   local fromvers
   local repo
   local tovers
-  while getopts Tt:w:aluvd:f:r:shL:A: flag; do
+  local restore
+  while getopts Tt:w:aluvd:f:r:shL:A:R flag; do
     case "${flag}" in
     T)
       test_upgrade "${fromvers:?-f fromvers required}" "${tovers:-SNAPSHOT}" "${repo:-rundeck/rundeck}"
@@ -187,6 +200,9 @@ main() {
     A)
       LICENSEAGREE=${OPTARG}
       ;;
+    R)
+      restore=true
+      ;;
     s)
       start_docker "${repo:-rundeck/rundeck}:${fromvers:?-f version required}" "${ddir:?-d dir required}"
       exit 0
@@ -204,6 +220,9 @@ main() {
       exit 0
       ;;
     u)
+      if [ "true" == "$restore" ] ; then
+        restore_backup_db "${ddir:?-d dir required}"
+      fi
       upgrade_db "${ddir:?-d dir required}"
       exit 0
       ;;
