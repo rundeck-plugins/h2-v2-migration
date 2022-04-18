@@ -41,6 +41,14 @@ main() {
   [ -n "$execid" ] && [ "null" != "$execid" ] || die "Could not get execution id"
   echo "√ Created execution: $execid"
 
+  # wait 3 seconds and assert execution completed
+  sleep 3
+  api_get "execution/$execid" >"$DATADIR/get-exec.out"
+  [ 0 == $? ] || die "Get Execution failed"
+
+  assert_json "$DATADIR/get-exec.out" ".job.id" "$JOBID" "Execution Job ID Value"
+  assert_json "$DATADIR/get-exec.out" ".status" "succeeded" "Execution Status"
+
   #TODO: load webhook
 }
 
