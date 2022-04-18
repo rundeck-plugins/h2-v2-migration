@@ -70,6 +70,7 @@ start_docker() {
     docker run -d -P -p 4441:4440 \
       -e RUNDECK_SERVER_ADDRESS=0.0.0.0 \
       -e RUNDECK_GRAILS_URL=http://localhost:4441 \
+      -e RUNDECK_PLUGIN_CLUSTER_RECOVEREXECUTIONS_ENABLED=true \
       -v "${DATADIR}/data:/home/rundeck/server/data" \
       -v "${DATADIR}/etc:/home/rundeck/etc" \
       "${IMAGE}"
