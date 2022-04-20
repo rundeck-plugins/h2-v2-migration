@@ -41,4 +41,5 @@ The migration.sh script will create a `output` folder at curent location and put
 - Set the permission of the file `{RUNDECK_HOME}/server/data/grails.mv.db` correctly, so Rundeck application can access it with write permission. Login to the docker container’s shell to change the ownership of the database files by executing the below command:
 
        sudo chown rundeck:root {RUNDECK_HOME}/server/data/grailsdb.mv.db
+- Add configuration `;NON_KEYWORDS=MONTH,HOUR,MINUTE,YEAR,SECONDS` to datasource.url in rundeck-config.properties file, i.e., `datasource.url = jdbc:h2:file:[rdbase]/server/data/grailsdb;NON_KEYWORDS=MONTH,HOUR,MINUTE,YEAR,SECONDS;DB_CLOSE_ON_EXIT=FALSE`
 - Restart the Rundeck application
