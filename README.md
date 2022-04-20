@@ -1,6 +1,5 @@
-# h2-v2-migration
-Migration Script and instructions for migrating from H2 V1 to V2
-
+# H2 V1 to V2 Migration Script
+Migration Script and instructions for migrating Rundeck instances running using H2 database from V1 (version less than 4.1.0) to V2 (versions 4.1.0 and older)
 
 # Preparation:
 
