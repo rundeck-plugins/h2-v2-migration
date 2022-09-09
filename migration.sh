@@ -44,7 +44,7 @@ echo "===> Jdbc drivers downloaded."
 echo ""
 
 echo "===> Start to export database into SQL script: "
-java -cp $OUTPUT_DIR/h2-1.4.200.jar org.h2.tools.Script -url "jdbc:h2:$file" -user "$username" -password "$password" -script "./$OUTPUT_DIR/backup.sql"
+java -cp $OUTPUT_DIR/h2-1.4.200.jar org.h2.tools.Script -url "jdbc:h2:${file:+./$file}" -user "$username" -password "$password" -script "./$OUTPUT_DIR/backup.sql"
 echo "===> Done export."
 echo ""
 
