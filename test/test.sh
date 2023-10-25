@@ -124,7 +124,7 @@ migrate_db() {
 
 copy_db() {
   local DATADIR=$1
-  cp "$SRC_DIR/../output/v2/data/grailsdb.mv.db" "$DATADIR/data/"
+  cp "$SRC_DIR/../output/v2.2/data/grailsdb.mv.db" "$DATADIR/data/"
   rm "$DATADIR/data/grailsdb.trace.db"
 }
 

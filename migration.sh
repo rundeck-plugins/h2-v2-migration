@@ -55,12 +55,6 @@ java -cp $DEST_JAR org.h2.tools.RunScript -url "jdbc:h2:./$OUTPUT_DIR/v2.2/data/
 echo "===> v2.2 database has been created at ./$OUTPUT_DIR/v2.2/data/grailsdb.mv.db"
 echo ""
 
-#echo "===> Fix databsae change logs"
-#java -cp $DEST_JAR org.h2.tools.RunScript -url "jdbc:h2:./$OUTPUT_DIR/v2.2/data/grailsdb" -user "$username" -password "$password" -script "./changelog_backup.sql"
-#echo "===> Database change logs has been fixed."
-#echo ""
-#echo ""
-
 
 echo "================================================================================================================="
 echo ""
