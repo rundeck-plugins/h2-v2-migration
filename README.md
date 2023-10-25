@@ -1,5 +1,5 @@
-# H2 V1 to V2 Migration Script
-Migration Script and instructions for migrating Rundeck instances running using H2 database from V1 (version less than 4.1.0) to V2 (versions 4.1.0 and older)
+# H2 V2 to V2.2 Migration Script
+Migration Script and instructions for migrating Rundeck instances running using H2 database from V2.0 and V2.1 (version greater than 4.1.0 and less than 5.0.0) to V2.2 (versions 5.0.0 and older)
 
 # Preparation:
 
@@ -36,7 +36,7 @@ The migration.sh script will create a `output` folder at current location and pu
 
 
 ## STEP-2. Deploy the new version database
-- Use the generated database file `./output/v2/data/grails.mv.db` from the above step to replace your the target Rundeck application database at `{RUNDECK_HOME}/server/data/grails.mv.db`
+- Use the generated database file `./output/v2.2/data/grails.mv.db` from the above step to replace your the target Rundeck application database at `{RUNDECK_HOME}/server/data/grails.mv.db`
 - Set the permission of the file `{RUNDECK_HOME}/server/data/grails.mv.db` correctly, so Rundeck application can access it with write permission. Login to the docker container’s shell to change the ownership of the database files by executing the below command:
 
        sudo chown rundeck:root {RUNDECK_HOME}/server/data/grailsdb.mv.db
