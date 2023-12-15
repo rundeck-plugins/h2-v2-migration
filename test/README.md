@@ -16,15 +16,23 @@ then verify the DB contents are expected.
 
 Perform full upgrade test from `rundeck/rundeck:4.17.3` docker image to the `rundeck/rundeck:5.0.0` image.
 
-## Example
+## Examples
 
 Test upgrade from 4.17.3 to SNAPSHOT for rundeck/rundeck
 
 `sh test/test.sh -f 4.17.3 -t SNAPSHOT -r rundeck/rundeck -T`
 
-Test upgrade from older (v1) 4.0.1 to 4.17.3 (v2) for rundeck/rundeck
+Test upgrade from Rundeck versions between `4.1.0` and `4.17.x` to versions `5.0.0` and up, for rundeck/rundeck:
 
-`sh test/test.sh -f 4.0.1 -t SNAPSHOT -r rundeck/rundeck -S v1 -D v2 -T`
+`sh test/test.sh -f 4.17.3 -t 5.0.0 -r rundeck/rundeck -T`
+
+Test upgrade from Rundeck versions `4.0.1` and older, to versions between `4.1.0` and `4.17.x`:
+
+`sh test/test.sh -f 4.0.1 -t 4.17.3 -r rundeck/rundeck -S v1 -D v2 -T`
+
+Test upgrade from Rundeck versions `4.0.1` and older, to versions `5.0.0` and up:
+
+`sh test/test.sh -f 4.0.1 -t 5.0.0 -r rundeck/rundeck -S v1 -D v3 -T`
 
 If using rundeckpro/enterprise, you must specify license file with `-L` and agreement to license terms
 with `-A true`

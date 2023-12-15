@@ -1,10 +1,10 @@
 #!/bin/sh
 
 V1_JAR="h2-1.4.200.jar"
-V2_JAR="h2-2.1.210.jar"
+V2_JAR="h2-2.1.212.jar"
 V3_JAR="h2-2.2.220.jar"
 V1_URL="https://repo1.maven.org/maven2/com/h2database/h2/1.4.200/h2-1.4.200.jar"
-V2_URL="https://repo1.maven.org/maven2/com/h2database/h2/2.1.210/h2-2.1.210.jar"
+V2_URL="https://repo1.maven.org/maven2/com/h2database/h2/2.1.212/h2-2.1.212.jar"
 V3_URL="https://repo1.maven.org/maven2/com/h2database/h2/2.2.220/h2-2.2.220.jar"
 
 sourceVer=v2
@@ -38,7 +38,6 @@ if [ "$destVer" != "v1" ] && [ "$destVer" != "v2" ] && [ "$destVer" != "v3" ]; t
     exit 255
 fi
 
-
 echo "===> Start to migrate h2 $sourceVer database from file: $file to $destVer"
 echo "===> Use db username: $username"
 echo "===> Use db password: $password"
@@ -46,6 +45,7 @@ echo "===> Use db password: $password"
 echo "===> Check output directory."
 
 OUTPUT_DIR=output
+
 
 if [ -d "$OUTPUT_DIR" ]; then
   # Take action if $DIR exists. #
@@ -61,9 +61,13 @@ if [ -d "$OUTPUT_DIR/$destVer" ]; then
 fi
 
 echo "===> Start to download JDBC drivers: "
-# Get source version driver
+
+EXTRA_IMPORT_OPTS=""
+
+# Check source version
 case $sourceVer in
     v1)
+        EXTRA_IMPORT_OPTS+=" -options FROM_1X"
         SOURCE_JAR=$OUTPUT_DIR/$V1_JAR
         curl $V1_URL --output $SOURCE_JAR
         ;;
@@ -76,6 +80,8 @@ case $sourceVer in
         curl $V3_URL --output $SOURCE_JAR
         ;;
 esac
+
+echo "===> Downloaded source version driver: $SOURCE_JAR"
 
 # Get dest version driver
 case $destVer in
@@ -93,6 +99,8 @@ case $destVer in
         ;;
 esac
 
+echo "===> Downloaded dest version driver: $DEST_JAR"
+
 echo "===> Jdbc drivers downloaded."
 echo ""
 
@@ -102,9 +110,17 @@ echo "===> Done export."
 echo ""
 
 echo "===> Start to create h2 $destVer database from the exported SQL script: "
-java -cp $DEST_JAR org.h2.tools.RunScript -url "jdbc:h2:./$OUTPUT_DIR/$destVer/data/grailsdb" -user "$username" -password "$password" -script "./$OUTPUT_DIR/backup.$sourceVer.sql"
+java -cp $DEST_JAR org.h2.tools.RunScript -url "jdbc:h2:./$OUTPUT_DIR/$destVer/data/grailsdb" -user "$username" -password "$password" -script "./$OUTPUT_DIR/backup.$sourceVer.sql" $EXTRA_IMPORT_OPTS
 echo "===> $destVer database has been created at ./$OUTPUT_DIR/$destVer/data/grailsdb.mv.db"
 echo ""
+
+# If source version is v1, then we need to fix the database change logs
+if [ "$sourceVer" == "v1" ]; then
+    echo "===> Fix databsae change logs"
+    java -cp $DEST_JAR org.h2.tools.RunScript -url "jdbc:h2:./$OUTPUT_DIR/$destVer/data/grailsdb" -user "$username" -password "$password" -script "./changelog_backup.sql"
+    echo "===> Database change logs has been fixed."
+    echo ""
+fi
 
 
 echo "================================================================================================================="
