@@ -2,7 +2,10 @@
 
 #/ Test the changelog migration using docker and Rundeck
 #/
-#/ Usage: test.sh -f from [-t to] [-r repo] -T # test upgrade fully for image $repo:$from to $repo:$to, default rundeck/rundeck to SNAPSHOT
+#/ Usage: test.sh -f from [-t to] [-r repo] [-S sourveVersion] [-D destVersion] -T # test upgrade fully for image $repo:$from to $repo:$to, default rundeck/rundeck to SNAPSHOT
+#/
+#/ Optionally add -S v1, v2 or v3 to specify the source version of the h2 database
+#/ Optionally add -D v1, v2 or v3 to specify the destination version of the h2 database
 #/
 #/ Other utilty actions:
 #/
@@ -14,6 +17,8 @@
 #/ Usage: test.sh -d dir -R -u  # restore h2v1 from backup, then upgrade h2 db for workdir
 #/ Usage: test.sh -d dir -v  # verify test content via rundeck api
 #/ Usage: test.sh -h # usage help
+#/
+
 
 set -euo pipefail
 IFS=$'\n\t'
@@ -22,6 +27,8 @@ WORKDIR="${SRC_DIR}/work"
 TOKEN=letmein
 LICENSEFILE=
 LICENSEAGREE=false
+SOURCE_VERSION=v2
+DEST_VERSION=v3
 source "${SRC_DIR}/common.sh"
 
 
@@ -119,12 +126,12 @@ migrate_db() {
   local DATADIR=$1
   local username=$2
   local password=$3
-  sh "$SRC_DIR/../migration.sh" -f "${DATADIR}/backup/grailsdb" -u "${username}" -p "${password}"
+  sh "$SRC_DIR/../migration.sh" -f "${DATADIR}/backup/grailsdb" -u "${username}" -p "${password}" -s "${SOURCE_VERSION}" -d "${DEST_VERSION}"
 }
 
 copy_db() {
   local DATADIR=$1
-  cp "$SRC_DIR/../output/v2/data/grailsdb.mv.db" "$DATADIR/data/"
+  cp "$SRC_DIR/../output/$DEST_VERSION/data/grailsdb.mv.db" "$DATADIR/data/"
   rm "$DATADIR/data/grailsdb.trace.db"
 }
 
@@ -180,7 +187,7 @@ main() {
   local repo
   local tovers
   local restore
-  while getopts Tt:w:aluvd:f:r:shL:A:R flag; do
+  while getopts Tt:w:aluvd:f:r:shL:A:RS:D: flag; do
     case "${flag}" in
     T)
       test_upgrade "${fromvers:?-f fromvers required}" "${tovers:-SNAPSHOT}" "${repo:-rundeck/rundeck}"
@@ -203,6 +210,12 @@ main() {
       ;;
     A)
       LICENSEAGREE=${OPTARG}
+      ;;
+    S)
+      SOURCE_VERSION=${OPTARG}
+      ;;
+    D)
+      DEST_VERSION=${OPTARG}
       ;;
     R)
       restore=true
