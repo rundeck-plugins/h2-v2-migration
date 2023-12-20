@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+set -eo pipefail
 
 V1_JAR="h2-1.4.200.jar"
 V2_JAR="h2-2.1.212.jar"
