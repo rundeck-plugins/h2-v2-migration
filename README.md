@@ -25,7 +25,7 @@ Before migration - copy and backup the database files somewhere safe:
 
 Open a shell terminal and navigate into the `h2-v2-migration` git repo. Execute the `migration.sh` shell command.
 
-    $_>/bin/sh migration.sh -f ${backup_directory}/grailsdb -u ${username} -p ${password}
+    ./migration.sh -f ${backup_directory}/grailsdb -u ${username} -p ${password}
 
 - The `-f` parameter is required and should be the full path to the backup database file without the extension.
 - The optional `-u` parameter is used for database username. If it is not provided, an empty string will be used.
@@ -39,6 +39,10 @@ Open a shell terminal and navigate into the `h2-v2-migration` git repo. Execute 
 
 By default, the `username` and `password` parameters are both empty string. If you have any custom setup, please use
 your customized values.
+
+To migrate from versions before `4.1.0`, you need to specify the source database version.
+
+        ./migration.sh -f ${backup_directory}/grailsdb -u ${username} -p ${password} -s v1 -d v3
 
 The migration.sh script will create a `output` folder at current location and put all generated files (including the v2
 database file) into it.
