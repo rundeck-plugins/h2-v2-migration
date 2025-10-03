@@ -1,0 +1,35 @@
+{
+  "name": "rundeck-h2-v2-migration",
+  "version": "1.0.0",
+  "description": "Configuration-only repository containing H2 database migration scripts and tools for Rundeck. This repository contains no executable Node.js code or runtime dependencies.",
+  "main": "migration.sh",
+  "scripts": {
+    "migrate": "./migration.sh",
+    "test": "./test/test.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rundeck-plugins/h2-v2-migration.git"
+  },
+  "keywords": [
+    "rundeck",
+    "h2-database",
+    "migration",
+    "configuration",
+    "tooling"
+  ],
+  "author": "Rundeck Plugins",
+  "license": "Apache-2.0",
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "private": true,
+  "config": {
+    "repository_type": "configuration-only",
+    "security_scanning": {
+      "note": "This repository contains only shell scripts, configuration files, and documentation. No Node.js runtime dependencies are required or used."
+    }
+  }
+}

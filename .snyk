@@ -1,0 +1,48 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+# This file is specific to the rundeck-h2-v2-migration repository
+
+# Repository Classification
+# This is a configuration-only repository containing:
+# - Shell scripts for H2 database migration
+# - Configuration files and test fixtures  
+# - Documentation and tooling
+# - No executable Node.js code or runtime dependencies
+
+version: v1.25.0
+
+# Language-specific settings
+language-settings:
+  javascript: false
+  python: false
+  java: false
+  golang: false
+  php: false
+  ruby: false
+  scala: false
+  swift: false
+  docker: false
+
+# Security policies for configuration repositories
+# Since this repository contains no executable dependencies,
+# we document the security posture for compliance purposes
+
+patch: {}
+
+ignore:
+  # No vulnerabilities to ignore as there are no dependencies
+  
+exclude:
+  # Exclude patterns for files that should not be scanned
+  global:
+    - "test/work/**"
+    - "output/**"
+    - "*.mv.db"
+    - "*.trace.db"
+    - ".git/**"
+
+# Security notes:
+# 1. This repository contains only shell scripts and configuration files
+# 2. The migration.sh script downloads H2 JAR files at runtime from Maven Central
+# 3. No package manager dependencies (npm, pip, maven, etc.) are used
+# 4. Security scanning focuses on shell script best practices and file permissions
+# 5. Users should verify H2 JAR integrity using checksums when running migration

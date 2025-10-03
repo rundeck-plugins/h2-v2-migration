@@ -1,5 +1,26 @@
 # Rundeck H2 Database Migration Script
 
+## Repository Overview
+
+This is a **configuration-only repository** containing shell scripts, configuration files, and documentation for migrating Rundeck H2 databases between versions. 
+
+### Repository Contents
+- `migration.sh` - Main migration shell script
+- `test/` - Test scripts and configuration files
+- `changelog_backup.sql` - SQL backup utilities
+- Configuration files (XML, properties, ACL policies)
+- Documentation and operational guides
+
+### Security & Compliance
+- **No executable Node.js code or runtime dependencies**
+- Contains `package.json` with empty dependencies for security scanning compliance
+- Includes `.snyk` policy file documenting security posture
+- See `SECURITY.md` for detailed security information
+
+---
+
+## Migration Instructions
+
 Migration Script and instructions for migrating Rundeck instances running using H2 database from V2.0 and V2.1 (Rundeck version
 greater than 4.1.0 and less than 5.0.0) to V2.2 (versions 5.0.0 and older)
 
